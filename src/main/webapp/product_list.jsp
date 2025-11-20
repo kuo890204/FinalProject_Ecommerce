@@ -33,7 +33,10 @@
             <!-- HTML 區塊，顯示一筆商品資料 -->
             <p>
                 ID：<%= p.getId() %> |
-                商品名稱：<%= p.getName() %> |
+                商品名稱：
+				<a href="ProductDetail?id=<%= p.getId() %>">
+				    <%= p.getName() %>
+				</a> |
                 價格：<%= p.getPrice() %> 元 |
                 庫存：<%= p.getStock() %> |
                 分類：<%= p.getCategory() %>

@@ -48,4 +48,35 @@ public class ProductDAO {         // 定義 ProductDAO 類別，專門處理「�
 
         return list;                       // 回傳裝滿所有商品的 List
     }
+    
+    
+    public Product getProductById(int id) {
+        Product p = null;
+
+        String sql = "SELECT * FROM products WHERE id = ?";
+
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);              // 把 ? 換成傳進來的 id
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {           // 如果有找到資料
+                    p = new Product();
+                    p.setId(rs.getInt("id"));
+                    p.setName(rs.getString("name"));
+                    p.setPrice(rs.getDouble("price"));
+                    p.setStock(rs.getInt("stock"));
+                    p.setCategory(rs.getString("category"));
+                    p.setImage(rs.getString("image"));
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return p; // 找不到就回傳 null
+    }
+    
 }
