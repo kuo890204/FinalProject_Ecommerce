@@ -1,0 +1,51 @@
+package dao;  
+// 此類別放在 dao 套件 → DAO = Data Access Object，負責資料庫操作
+
+import java.sql.*;                // 匯入所有 JDBC 相關類別 (Connection, PreparedStatement, ResultSet)
+import java.util.ArrayList;
+import java.util.List;
+
+import model.Product;             // 匯入 Product Model，用來裝每一筆商品資料
+import util.DatabaseUtil;         // 匯入你剛寫的 DatabaseUtil，用來取得DB連線
+
+public class ProductDAO {         // 定義 ProductDAO 類別，專門處理「產品資料表」的DB操作
+
+    public List<Product> getAllProducts() {  
+    	//集合的一種 方法：取得所有商品的清單，回傳 List<Product> 
+
+        List<Product> list = new ArrayList<>();  
+        // 建立一個空的 List，用來存查詢結果轉成的 Product 物件
+
+        String sql = "SELECT * FROM products";  
+        // SQL 指令：查詢 products 資料表所有資料
+
+        try (Connection conn = DatabaseUtil.getConnection();  
+        							// 取得資料庫連線（使用 try-with-resources 自動關閉連線）
+
+             PreparedStatement ps = conn.prepareStatement(sql);  
+        							//SQL 執行通道（不關掉 = 記憶體浪費）
+             ResultSet rs = ps.executeQuery()) {  
+             						// 執行查詢，結果放進 ResultSet
+        							//ResultSet 是「資料庫的結果」，不是「商品物件」。
+
+            while (rs.next()) {             // 逐行讀取查詢結果
+                Product p = new Product();  // 建立 Product 物件來裝一筆資料
+
+                // 以下從 ResultSet 取出每一欄資料 → 填入 Product 物件
+                p.setId(rs.getInt("id"));               
+                p.setName(rs.getString("name"));
+                p.setPrice(rs.getDouble("price"));
+                p.setStock(rs.getInt("stock"));
+                p.setCategory(rs.getString("category"));
+                p.setImage(rs.getString("image"));
+
+                list.add(p);                // 將這筆商品加入清單
+            }
+
+        } catch (Exception e) {             // 捕捉錯誤（資料庫連線或 SQL 問題）
+            e.printStackTrace();           // 印出錯誤訊息（方便 debug）
+        }
+
+        return list;                       // 回傳裝滿所有商品的 List
+    }
+}
