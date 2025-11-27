@@ -15,6 +15,27 @@
 <title>商品列表</title>
 </head>
 <body>
+<%@ page import="model.User" %>
+
+<%
+    // 從 Session 拿出登入者資料（LoginServlet 已經 setAttribute("loginUser", user)）
+    User loginUser = (User) session.getAttribute("loginUser");
+%>ㄌ
+
+<div style="padding: 10px; border-bottom: 1px solid #ccc; margin-bottom: 15px;">
+    <%
+        if (loginUser != null) {
+    %>
+        歡迎，<strong><%= loginUser.getName() != null ? loginUser.getName() : loginUser.getUsername() %></strong>！　
+        <a href="Logout">登出</a>
+    <%
+        } else {
+    %>
+        您目前是訪客身分。<a href="Login">登入</a>
+    <%
+        }
+    %>
+</div>
 
 <h2>商品列表（TEST999）</h2>
 
