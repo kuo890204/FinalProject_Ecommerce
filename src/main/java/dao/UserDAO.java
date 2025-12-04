@@ -9,11 +9,7 @@ import util.DatabaseUtil;
 
 public class UserDAO {
 
-    /**
-     * 登入用：用帳號 + 密碼去資料庫查
-     * 找到 → 回傳 User 物件
-     * 找不到 → 回傳 null
-     */
+    // 登入（SELECT）
     public User login(String username, String password) {
         User user = null;
 
@@ -22,7 +18,6 @@ public class UserDAO {
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            // 把 ? 換成真實帳號、密碼
             ps.setString(1, username);
             ps.setString(2, password);
 
@@ -43,9 +38,29 @@ public class UserDAO {
             e.printStackTrace();
         }
 
-        return user;  // 沒查到 → null
+        return user;  // 查不到就回傳 null
     }
-    
+
+ // 檢查 username 是否存在
+    public boolean isUsernameExists(String username) {
+        String sql = "SELECT id FROM users WHERE username = ? LIMIT 1";
+
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, username);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();  // 查到 → 帳號存在
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return true; // 保守策略：出現 Exception 就當作存在（避免註冊重複帳號）
+        }
+    }
+
+    // 註冊（INSERT）
     public boolean register(User user) {
         String sql = "INSERT INTO users (username, password, name, address, email, role) " +
                      "VALUES (?, ?, ?, ?, ?, ?)";
@@ -58,16 +73,14 @@ public class UserDAO {
             ps.setString(3, user.getName());
             ps.setString(4, user.getAddress());
             ps.setString(5, user.getEmail());
-            ps.setString(6, user.getRole());   // 一般註冊就給 "user"
+            ps.setString(6, user.getRole());
 
-            int rows = ps.executeUpdate();     // 受影響的列數（新增幾筆）
-
-            return rows > 0;                   // 成功新增至少一筆 = true
+            int rows = ps.executeUpdate();
+            return rows > 0;
 
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
-
 }

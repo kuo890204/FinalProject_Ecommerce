@@ -79,4 +79,74 @@ public class ProductDAO {         // 定義 ProductDAO 類別，專門處理「�
         return p; // 找不到就回傳 null
     }
     
+ // 新增商品（INSERT）
+    public boolean addProduct(Product product) {
+
+        String sql = "INSERT INTO products (name, price, stock, category, image) "
+                   + "VALUES (?, ?, ?, ?, ?)";
+
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, product.getName());
+            ps.setDouble(2, product.getPrice());
+            ps.setInt(3, product.getStock());
+            ps.setString(4, product.getCategory());
+            ps.setString(5, product.getImage());
+
+            int rows = ps.executeUpdate();
+            return rows > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+ // 修改商品（UPDATE）
+    public boolean updateProduct(Product product) {
+
+        String sql = "UPDATE products "
+                   + "SET name = ?, price = ?, stock = ?, category = ?, image = ? "
+                   + "WHERE id = ?";
+
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, product.getName());
+            ps.setDouble(2, product.getPrice());
+            ps.setInt(3, product.getStock());
+            ps.setString(4, product.getCategory());
+            ps.setString(5, product.getImage());
+            ps.setInt(6, product.getId());
+
+            int rows = ps.executeUpdate();
+            return rows > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    
+ // 刪除商品（DELETE）
+    public boolean deleteProduct(int id) {
+
+        String sql = "DELETE FROM products WHERE id = ?";
+
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+
+            int rows = ps.executeUpdate();
+            return rows > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }

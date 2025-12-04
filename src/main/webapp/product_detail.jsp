@@ -13,7 +13,7 @@
 <title>商品詳細資料</title>
 </head>
 <body>
-
+<jsp:include page="header.jsp" />
 <h2>商品詳細資料</h2>
 
 <% if (p != null) { %>
@@ -27,8 +27,12 @@
     <p>圖片檔名：<%= p.getImage() %></p>
 
     <hr>
-
+	
     <!-- 之後要做加入購物車按鈕就在這裡加 -->
+     <!-- 🔥 加入購物車 -->
+    <p>
+        <a href="AddToCart?productId=<%= p.getId() %>">加入購物車</a>
+    </p>
     <p>
         <a href="ProductList">回商品列表</a>
     </p>
