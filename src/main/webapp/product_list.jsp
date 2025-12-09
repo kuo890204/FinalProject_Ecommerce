@@ -15,6 +15,29 @@
 <title>商品列表</title>
 </head>
 <body>
+<jsp:include page="header.jsp" />
+<%@ page import="model.User" %>
+
+<%
+    // 從 Session 拿出登入者資料（LoginServlet 已經 setAttribute("loginUser", user)）
+    User loginUser = (User) session.getAttribute("loginUser");
+%>
+
+<div style="padding: 10px; border-bottom: 1px solid #ccc; margin-bottom: 15px;">
+    <%
+        if (loginUser != null) {
+    %>
+        歡迎，<strong><%= loginUser.getName() != null ? loginUser.getName() : loginUser.getUsername() %></strong>！　
+       	<a href="Cart">查看購物車</a> |
+        <a href="Logout">登出</a>
+    <%
+        } else {
+    %>
+        您目前是訪客身分。<a href="Login">登入</a>
+    <%
+        }
+    %>
+</div>
 
 <h2>商品列表（TEST999）</h2>
 
@@ -33,10 +56,16 @@
             <!-- HTML 區塊，顯示一筆商品資料 -->
             <p>
                 ID：<%= p.getId() %> |
-                商品名稱：<%= p.getName() %> |
+                商品名稱：
+				<a href="ProductDetail?id=<%= p.getId() %>">
+				    <%= p.getName() %>
+				</a> |
                 價格：<%= p.getPrice() %> 元 |
                 庫存：<%= p.getStock() %> |
                 分類：<%= p.getCategory() %>
+                <!-- 🔥 新增加入購物車按鈕 -->
+				<a href="AddToCart?productId=<%= p.getId() %>">加入購物車</a>
+				
             </p>
 
 <%
