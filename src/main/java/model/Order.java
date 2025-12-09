@@ -9,11 +9,13 @@ public class Order {
     private double totalAmount;
     private String status;
     private Date createdAt;
+    private String userName;   // 會員姓名（或帳號）for 後台顯示
+   
 
     public Order() {}
-
+    
     // Getter / Setter
-
+    
     public int getId() {
         return id;
     }
@@ -47,5 +49,12 @@ public class Order {
     }
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+    
+    public String getUserName() {
+        return userName;
+    }
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

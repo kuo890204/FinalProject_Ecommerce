@@ -79,6 +79,13 @@
                 清空購物車
             </button>
         </form>
+        <!-- 🔹 新增：前往結帳 -->
+        <form action="Checkout" method="post" style="display:inline; margin-left:10px;">
+            <button type="submit">
+                前往結帳
+            </button>
+        </form>
+    </p>
     </p>
 
     <p><a href="ProductList">繼續購物</a></p>

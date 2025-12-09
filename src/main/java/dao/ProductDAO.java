@@ -148,5 +148,22 @@ public class ProductDAO {         // 定義 ProductDAO 類別，專門處理「�
             return false;
         }
     }
+ 
+    // 結帳用：扣庫存（stock = stock - quantity）
+    public void decreaseStock(int productId, int quantity) {
+        String sql = "UPDATE products SET stock = stock - ? WHERE id = ?";
+
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, quantity);
+            ps.setInt(2, productId);
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }

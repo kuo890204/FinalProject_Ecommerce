@@ -14,7 +14,12 @@
 
 <h2>商品後台管理</h2>
 
-<p><a href="ProductAdd">＋ 新增商品</a></p>
+<p>
+    <a href="ProductAdd">＋ 新增商品</a>
+    |
+    <a href="<%= request.getContextPath() %>/admin/orders">訂單管理</a>
+</p>
+
 
 <table border="1" cellpadding="10">
     <tr>
