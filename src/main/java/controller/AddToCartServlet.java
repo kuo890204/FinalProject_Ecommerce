@@ -15,11 +15,13 @@ import model.User;
 @WebServlet("/AddToCart")
 public class AddToCartServlet extends HttpServlet {
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    // ✅ 共用邏輯：不管是 GET / POST 都走這裡
+    private void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // 1️⃣ 檢查是否登入（未登入 → 去 Login）
+        request.setCharacterEncoding("UTF-8");
+
+        // 檢查是否登入（未登入 → 去 Login）
         HttpSession session = request.getSession(false); // false = 不建立新的
         User loginUser = null;
         if (session != null) {
@@ -32,7 +34,7 @@ public class AddToCartServlet extends HttpServlet {
             return;
         }
 
-        // 2️⃣ 取得商品 id（從網址 ?productId=xxx）
+        // 取得商品 id（從網址 / 表單的 productId）
         String idStr = request.getParameter("productId");
         if (idStr == null || idStr.isEmpty()) {
             // 沒帶 productId → 回商品列表
@@ -55,7 +57,7 @@ public class AddToCartServlet extends HttpServlet {
         ProductDAO productDAO = new ProductDAO();
         CartItemDAO cartItemDAO = new CartItemDAO();
 
-        // 3️⃣ 先查商品資料（順便拿庫存）
+        // 先查商品資料（順便拿庫存）
         Product product = productDAO.getProductById(productId);
         if (product == null) {
             // 商品不存在 → 回商品列表
@@ -63,7 +65,7 @@ public class AddToCartServlet extends HttpServlet {
             return;
         }
 
-        // 4️⃣ 查目前購物車裡已經有幾個這個商品
+        // 查目前購物車裡已經有幾個這個商品
         int userId = loginUser.getId();
         int currentQty = 0;
 
@@ -77,17 +79,29 @@ public class AddToCartServlet extends HttpServlet {
 
         int newQty = currentQty + addQty;
 
-        // 5️⃣ 庫存檢查：新數量不能超過 stock
+        // 庫存檢查：新數量不能超過 stock
         if (newQty > product.getStock()) {
-            // 庫存不足 → 先簡單導回商品詳細頁（帶錯誤訊息參數）
+            // 庫存不足 → 導回商品詳細頁（帶錯誤訊息參數）
             response.sendRedirect("ProductDetail?id=" + productId + "&error=out_of_stock");
             return;
         }
 
-        // 6️⃣ 呼叫 DAO：若有就更新數量，沒有就新增
+        // 呼叫 DAO：若有就更新數量，沒有就新增
         cartItemDAO.addOrUpdateItem(userId, productId, addQty);
 
-        // 7️⃣ 加入成功 → 導到購物車頁（之後會做 CartServlet）
+        // 加入成功 → 導到購物車頁
         response.sendRedirect("Cart");
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
     }
 }
