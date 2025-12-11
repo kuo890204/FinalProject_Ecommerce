@@ -6,7 +6,7 @@
     if (session != null) {
         loginUser = (User) session.getAttribute("loginUser");
     }
-
+// 測試
     String ctx = request.getContextPath();  // ← 專案根路徑，例如 /FinalProject_Ecommerce
 %>
 
