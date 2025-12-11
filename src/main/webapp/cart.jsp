@@ -49,7 +49,14 @@
                 <!-- 🔹 修改數量：送到 UpdateCartQuantity -->
                 <form action="UpdateCartQuantity" method="post" style="display:inline;">
                     <input type="hidden" name="cartItemId" value="<%= item.getId() %>">
-                    <input type="number" name="quantity" value="<%= qty %>" min="1" style="width:60px;">
+                    <input
+    type="number"
+    name="quantity"
+    value="<%= qty %>"
+    min="1"
+    max="<%= p.getStock() %>"
+    style="width:60px;">
+
                     <button type="submit">更新</button>
                 </form>
             </td>

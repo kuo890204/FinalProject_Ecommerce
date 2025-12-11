@@ -30,9 +30,11 @@
 	
     <!-- 之後要做加入購物車按鈕就在這裡加 -->
      <!-- 🔥 加入購物車 -->
-    <p>
-        <a href="AddToCart?productId=<%= p.getId() %>">加入購物車</a>
-    </p>
+<form action="AddToCart" method="post">
+    <input type="hidden" name="productId" value="<%= p.getId() %>">
+    <button type="submit">加入購物車</button>
+</form>
+
     <p>
         <a href="ProductList">回商品列表</a>
     </p>

@@ -64,7 +64,11 @@
                 庫存：<%= p.getStock() %> |
                 分類：<%= p.getCategory() %>
                 <!-- 🔥 新增加入購物車按鈕 -->
-				<a href="AddToCart?productId=<%= p.getId() %>">加入購物車</a>
+				<form action="AddToCart" method="post">
+    <input type="hidden" name="productId" value="<%= p.getId() %>">
+    <button type="submit">加入購物車</button>
+</form>
+
 				
             </p>
 
