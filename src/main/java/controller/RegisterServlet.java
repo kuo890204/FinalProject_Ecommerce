@@ -33,7 +33,7 @@ public class RegisterServlet extends HttpServlet {
         String address  = request.getParameter("address");
         String email    = request.getParameter("email");
 
-        // 1️⃣ 簡單必填檢查
+        // 1️ 簡單必填檢查
         if (username == null || username.isEmpty() ||
             password == null || password.isEmpty()) {
 
@@ -45,7 +45,7 @@ public class RegisterServlet extends HttpServlet {
 
         UserDAO userDAO = new UserDAO();
 
-        // 2️⃣ 先檢查帳號是否存在
+        // 2️ 先檢查帳號是否存在
         if (userDAO.isUsernameExists(username)) {
             request.setAttribute("error", "這個帳號已經被使用了");
 
@@ -59,16 +59,16 @@ public class RegisterServlet extends HttpServlet {
             return;
         }
 
-        // 3️⃣ 組 User 物件（帳號可用，才建 User）
+        // 3️ 組 User 物件（帳號可用，才建 User）
         User user = new User();
         user.setUsername(username);
-        user.setPassword(password);  // 專題階段先用明碼 OK
+        user.setPassword(password); 
         user.setName(name);
         user.setAddress(address);
         user.setEmail(email);
         user.setRole("user");        // 一般註冊者都是 user
 
-        // 4️⃣ 寫入資料庫
+        // 4️ 寫入資料庫
         boolean ok = userDAO.register(user);   // ✅ 這裡改成 userDAO
 
         if (ok) {
