@@ -1,6 +1,11 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List" %>
 <%@ page import="model.Product" %>
+<%
+  String ctx = request.getContextPath();
+%>
+
+
 
 <!DOCTYPE html>
 <html>
@@ -10,14 +15,14 @@
 </head>
 <body>
 
-<jsp:include page="header.jsp" />
+<jsp:include page="/header.jsp" />
 
 <h2>商品後台管理</h2>
 
 <p>
     <a href="ProductAdd">＋ 新增商品</a>
     |
-    <a href="<%= request.getContextPath() %>/admin/orders">訂單管理</a>
+    <a href="<%= ctx %>/admin/orders">訂單管理</a>
 </p>
 
 

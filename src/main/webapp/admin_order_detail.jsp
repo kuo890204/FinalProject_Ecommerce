@@ -2,6 +2,11 @@
 <%@ page import="java.util.List" %>
 <%@ page import="model.Order, model.OrderItem, model.Product" %>
 
+<%
+  String ctx = request.getContextPath();
+%>
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,7 +15,7 @@
 </head>
 <body>
 
-<jsp:include page="header.jsp" />
+<jsp:include page="/header.jsp" />
 
 <%
     Order order = (Order) request.getAttribute("order");
@@ -20,7 +25,7 @@
 <% if (order == null) { %>
     <p>找不到這筆訂單。</p>
     <p>
-        <a href="<%= request.getContextPath() %>/admin/orders">回訂單列表</a>
+        <a href="<%= ctx %>/admin/orders">回訂單列表</a>
     </p>
 <% } else { %>
 
@@ -33,7 +38,7 @@
 <p>建立時間：<%= order.getCreatedAt() %></p>
 
 <!-- 狀態修改 -->
-<form action="<%= request.getContextPath() %>/admin/orders/status" method="post" style="margin:10px 0;">
+<form action="<%= ctx %>/admin/orders/status" method="post" style="margin:10px 0;">
     <input type="hidden" name="orderId" value="<%= order.getId() %>">
     <label>變更訂單狀態：
         <select name="status">
@@ -83,7 +88,7 @@
 %>
 
 <p style="margin-top:15px;">
-	<a href="<%= request.getContextPath() %>/admin/orders">回訂單列表</a>
+	<a href="<%= ctx %>/admin/orders">回訂單列表</a>
 
 </p>
 

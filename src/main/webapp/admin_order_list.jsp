@@ -1,6 +1,9 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List" %>
 <%@ page import="model.Order" %>
+<%
+  String ctx = request.getContextPath();
+%>
 
 <!DOCTYPE html>
 <html>
@@ -42,7 +45,7 @@
             <td><%= o.getStatus() %></td>
             <td><%= o.getCreatedAt() %></td>
             <td>
-                <a href="<%= request.getContextPath() %>/admin/orders/detail?id=<%= o.getId() %>">
+                <a href="<%= ctx %>/admin/orders/detail?id=<%= o.getId() %>">
     查看明細
 </a>
             </td>
@@ -55,7 +58,7 @@
     }
 %>
 
-<a href="<%= request.getContextPath() %>/AdminProductList">回商品管理</a>
+<a href="<%= ctx %>/AdminProductList">回商品管理</a>
 
 
 </body>

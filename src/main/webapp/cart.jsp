@@ -8,6 +8,11 @@
 <meta charset="UTF-8">
 <title>購物車</title>
 </head>
+
+<%
+    String ctx = request.getContextPath();
+%>
+
 <body>
 
 <jsp:include page="header.jsp" />
@@ -19,7 +24,8 @@
     if (items == null || items.isEmpty()) {
 %>
     <p>目前購物車是空的。</p>
-    <p><a href="ProductList">回商品列表</a></p>
+   <p><a href="<%= ctx %>/ProductList">回商品列表</a></p>
+
 <%
     } else {
 
@@ -47,7 +53,7 @@
             <td>$<%= p.getPrice() %></td>
             <td>
                 <!-- 🔹 修改數量：送到 UpdateCartQuantity -->
-                <form action="UpdateCartQuantity" method="post" style="display:inline;">
+                <form action="<%= ctx %>/UpdateCartQuantity" method="post" style="display:inline;">
                     <input type="hidden" name="cartItemId" value="<%= item.getId() %>">
                     <input
     type="number"
@@ -63,7 +69,7 @@
             <td>$<%= subTotal %></td>
             <td>
                 <!-- 刪除單一商品 -->
-                <a href="DeleteCartItem?cartItemId=<%= item.getId() %>"
+                <a href="<%= ctx %>/DeleteCartItem?cartItemId=<%= item.getId() %>"
                    onclick="return confirm('確定要刪除這個商品嗎？');">
                     刪除
                 </a>
@@ -81,21 +87,21 @@
 
     <p>
         <!-- 🔹 清空購物車：用 POST 呼叫 ClearCart（只包按鈕） -->
-        <form action="ClearCart" method="post" style="display:inline;">
+        <form action="<%= ctx %>/ClearCart" method="post" style="display:inline;">
             <button type="submit" onclick="return confirm('確定要清空購物車嗎？');">
                 清空購物車
             </button>
         </form>
         <!-- 🔹 新增：前往結帳 -->
-        <form action="Checkout" method="post" style="display:inline; margin-left:10px;">
+        <form action="<%= ctx %>/Checkout" method="post" style="display:inline; margin-left:10px;">
             <button type="submit">
                 前往結帳
             </button>
         </form>
     </p>
-    </p>
+  
 
-    <p><a href="ProductList">繼續購物</a></p>
+    <p><a href="<%= ctx %>/ProductList">繼續購物</a></p>
 
 <%
     } // end else
