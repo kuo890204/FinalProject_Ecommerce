@@ -26,13 +26,13 @@ public class AdminOrderDetailServlet extends HttpServlet {
         }
 
         if (loginUser == null || !"admin".equals(loginUser.getRole())) {
-            response.sendRedirect("Login");
+        	response.sendRedirect(request.getContextPath() + "/Login");
             return;
         }
 
         String idStr = request.getParameter("id");
         if (idStr == null || idStr.isEmpty()) {
-            response.sendRedirect("admin/orders");
+        	response.sendRedirect(request.getContextPath() + "/admin/orders");
             return;
         }
 
@@ -43,7 +43,7 @@ public class AdminOrderDetailServlet extends HttpServlet {
         List<OrderItem> items = orderDao.getOrderItemsWithProduct(orderId);
 
         if (order == null) {
-            response.sendRedirect("admin/orders");
+        	request.getRequestDispatcher("/admin/admin_order_detail.jsp");
             return;
         }
 
