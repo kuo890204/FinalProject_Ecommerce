@@ -9,7 +9,7 @@ import dao.ProductDAO;
 import model.Product;
 import model.User;
 
-@WebServlet("/ProductAdd")
+@WebServlet({"/ProductAdd", "/admin/products/add"})
 public class ProductAddServlet extends HttpServlet {
 
     // 顯示新增商品的表單（GET）

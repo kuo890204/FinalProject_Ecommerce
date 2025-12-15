@@ -13,7 +13,7 @@
 </head>
 <body>
 
-<jsp:include page="header.jsp" />
+<jsp:include page="/header.jsp" />
 
 <h2>訂單管理</h2>
 

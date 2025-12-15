@@ -15,7 +15,7 @@
 <title>商品列表</title>
 </head>
 <body>
-<jsp:include page="header.jsp" />
+<jsp:include page="/header.jsp" />
 <%@ page import="model.User" %>
 
 <%
@@ -39,7 +39,7 @@
     %>
 </div>
 
-<h2>商品列表（TEST999）</h2>
+<h2>商品列表</h2>
 
 <%
     // 1️⃣ 從 request 中取出由 Servlet 傳來的商品清單

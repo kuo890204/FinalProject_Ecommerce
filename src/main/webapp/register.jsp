@@ -6,7 +6,7 @@
 <title>會員註冊</title>
 </head>
 <body>
-<jsp:include page="header.jsp" />
+<jsp:include page="/header.jsp" />
 <h2>會員註冊</h2>
 
 <%

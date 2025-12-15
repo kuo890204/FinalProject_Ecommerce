@@ -13,7 +13,7 @@
 <title>商品詳細資料</title>
 </head>
 <body>
-<jsp:include page="header.jsp" />
+<jsp:include page="/header.jsp" />>
 <h2>商品詳細資料</h2>
 
 <% if (p != null) { %>

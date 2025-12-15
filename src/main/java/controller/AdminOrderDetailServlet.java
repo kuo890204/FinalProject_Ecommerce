@@ -43,9 +43,10 @@ public class AdminOrderDetailServlet extends HttpServlet {
         List<OrderItem> items = orderDao.getOrderItemsWithProduct(orderId);
 
         if (order == null) {
-        	request.getRequestDispatcher("/admin/admin_order_detail.jsp");
+            response.sendRedirect(request.getContextPath() + "/admin/orders");
             return;
         }
+
 
         request.setAttribute("order", order);
         request.setAttribute("items", items);

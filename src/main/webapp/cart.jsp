@@ -15,7 +15,7 @@
 
 <body>
 
-<jsp:include page="header.jsp" />
+<jsp:include page="/header.jsp" />
 
 <h2>購物車</h2>
 

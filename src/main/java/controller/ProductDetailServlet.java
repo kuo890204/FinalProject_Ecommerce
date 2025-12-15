@@ -8,7 +8,7 @@ import javax.servlet.http.*;
 import dao.ProductDAO;
 import model.Product;
 
-@WebServlet("/ProductDetail")  // URL: /ProductDetail?id=1
+@WebServlet({"/ProductDelete", "/admin/products/delete"})
 public class ProductDetailServlet extends HttpServlet {
 
     @Override

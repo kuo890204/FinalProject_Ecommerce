@@ -7,7 +7,7 @@
 </head>
 <body>
 
-<jsp:include page="header.jsp" />
+<jsp:include page="/header.jsp" />
 
 <h2>新增商品</h2>
 

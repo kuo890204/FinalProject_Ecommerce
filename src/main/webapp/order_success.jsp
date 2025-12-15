@@ -10,7 +10,7 @@
 </head>
 <body>
 
-<jsp:include page="header.jsp" />
+<jsp:include page="/header.jsp" />
 
 <h2>訂單成立</h2>
 

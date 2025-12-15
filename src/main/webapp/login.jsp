@@ -7,7 +7,7 @@
 <title>會員登入</title>
 </head>
 <body>
-<jsp:include page="header.jsp" />
+<jsp:include page="/header.jsp" />
 <h2>會員登入</h2>
 
 <!-- 顯示錯誤訊息（如果有的話） -->

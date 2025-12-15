@@ -10,7 +10,7 @@ import dao.ProductDAO;
 import model.Product;
 import model.User;
 
-@WebServlet("/AdminProductList")
+@WebServlet({"/AdminProductList", "/admin/products"})
 public class AdminProductListServlet extends HttpServlet {
 
     @Override
