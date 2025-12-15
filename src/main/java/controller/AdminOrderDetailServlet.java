@@ -18,23 +18,12 @@ public class AdminOrderDetailServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        HttpSession session = request.getSession(false);
-        User loginUser = null;
-        if (session != null) {
-            loginUser = (User) session.getAttribute("loginUser");
-        }
-
-        if (loginUser == null || !"admin".equals(loginUser.getRole())) {
-        	response.sendRedirect(request.getContextPath() + "/Login");
-            return;
-        }
-
-        String idStr = request.getParameter("id");
-        if (idStr == null || idStr.isEmpty()) {
-        	response.sendRedirect(request.getContextPath() + "/admin/orders");
-            return;
-        }
+	
+    	   String idStr = request.getParameter("id");
+    	    if (idStr == null || idStr.isEmpty()) {
+    	        response.sendRedirect(request.getContextPath() + "/admin/orders");
+    	        return;
+    	    }
 
         int orderId = Integer.parseInt(idStr);
 
