@@ -17,31 +17,40 @@ public class AdminOrderStatusServlet extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
 
-        HttpSession session = request.getSession(false);
-        User loginUser = null;
-        if (session != null) {
-            loginUser = (User) session.getAttribute("loginUser");
-        }
+//        HttpSession session = request.getSession(false);
+//        User loginUser = null;
+//        if (session != null) {
+//            loginUser = (User) session.getAttribute("loginUser");
+//        }
+//
+//        if (loginUser == null || !"admin".equals(loginUser.getRole())) {
+//            response.sendRedirect("Login");
+//            return;
+//        }
+       
 
-        if (loginUser == null || !"admin".equals(loginUser.getRole())) {
-            response.sendRedirect("Login");
-            return;
-        }
+        String ctx = request.getContextPath();
 
         String idStr = request.getParameter("orderId");
         String status = request.getParameter("status");
 
-        if (idStr == null || idStr.isEmpty() || status == null || status.isEmpty()) {
-            response.sendRedirect("admin/orders");
+        if (idStr == null || idStr.trim().isEmpty() || status == null || status.trim().isEmpty()) {
+            response.sendRedirect(ctx + "/admin/orders");
             return;
         }
 
-        int orderId = Integer.parseInt(idStr);
+        int orderId;
+        try {
+            orderId = Integer.parseInt(idStr.trim());
+        } catch (NumberFormatException e) {
+            response.sendRedirect(ctx + "/admin/orders");
+            return;
+        }
 
         OrderDAO orderDao = new OrderDAO();
         orderDao.updateStatus(orderId, status);
 
         // 改完狀態後回到這筆訂單明細頁
-        response.sendRedirect("detail?id=" + orderId);
+        response.sendRedirect(ctx + "/admin/orders/detail?id=" + orderId);
     }
 }

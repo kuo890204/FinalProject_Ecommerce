@@ -15,24 +15,28 @@ public class ClearCartServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // 1️⃣ 檢查是否登入
-        HttpSession session = request.getSession(false);
-        User loginUser = null;
-        if (session != null) {
-            loginUser = (User) session.getAttribute("loginUser");
-        }
+//        //  檢查是否登入
+//        HttpSession session = request.getSession(false);
+//        User loginUser = null;
+//        if (session != null) {
+//            loginUser = (User) session.getAttribute("loginUser");
+//        }
 
-        if (loginUser == null) {
-            response.sendRedirect("Login");
-            return;
-        }
+//        if (loginUser == null) {
+//            response.sendRedirect("Login");
+//            return;
+//        }
 
-        // 2️⃣ 清空這個使用者的購物車
+    	
+    	HttpSession session = request.getSession(false);
+    	User loginUser = (User) session.getAttribute("loginUser"); 
+        //  清空這個使用者的購物車
+    
         int userId = loginUser.getId();
         CartItemDAO dao = new CartItemDAO();
         dao.clearCart(userId);
 
-        // 3️⃣ 清完回購物車頁
-        response.sendRedirect("Cart");
+        //  清完回購物車頁
+        response.sendRedirect(request.getContextPath() + "/Cart");
     }
 }

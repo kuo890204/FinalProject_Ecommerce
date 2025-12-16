@@ -19,32 +19,35 @@ public class CartServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // 1️⃣ 是否登入
-        HttpSession session = request.getSession(false);
-        User loginUser = null;
-        if (session != null) {
-            loginUser = (User) session.getAttribute("loginUser");
-        }
-        if (loginUser == null) {
-            response.sendRedirect("Login");
-            return;
-        }
+//        // 1️ 是否登入
+//        HttpSession session = request.getSession(false);
+//        User loginUser = null;
+//        if (session != null) {
+//            loginUser = (User) session.getAttribute("loginUser");
+//        }
+//        if (loginUser == null) {
+//            response.sendRedirect("Login");
+//            return;
+//        }
 
+//        int userId = loginUser.getId();
+    	
+    	User loginUser = (User) request.getSession(false).getAttribute("loginUser");
         int userId = loginUser.getId();
-
+        
         CartItemDAO cartDao = new CartItemDAO();
         ProductDAO productDao = new ProductDAO();
 
-        // 2️⃣ 查詢購物車清單
+        // 2️查詢購物車清單
         List<CartItem> items = cartDao.getCartItemsByUser(userId);
 
-        // 3️⃣ 每筆 item 補上對應的 Product（讓 JSP 可顯示品名 / 價格）
+        // 3️ 每筆 item 補上對應的 Product（讓 JSP 可顯示品名 / 價格）
         for (CartItem item : items) {
             Product p = productDao.getProductById(item.getProductId());
             item.setProduct(p);  // ⭐ 把商品塞回 cart item 裡，JSP 印起來超方便
         }
 
-        // 4️⃣ 傳資料給 cart.jsp
+        // 4️ 傳資料給 cart.jsp
         request.setAttribute("cartItems", items);
 
         RequestDispatcher rd = request.getRequestDispatcher("cart.jsp");

@@ -15,22 +15,23 @@ public class DeleteCartItemServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // 1️⃣ 檢查是否登入
-        HttpSession session = request.getSession(false);
-        User loginUser = null;
-        if (session != null) {
-            loginUser = (User) session.getAttribute("loginUser");
-        }
+//        // 1️⃣ 檢查是否登入
+//        HttpSession session = request.getSession(false);
+//        User loginUser = null;
+//        if (session != null) {
+//            loginUser = (User) session.getAttribute("loginUser");
+//        }
+//
+//        if (loginUser == null) {
+//            response.sendRedirect("Login");
+//            return;
+//        }
 
-        if (loginUser == null) {
-            response.sendRedirect("Login");
-            return;
-        }
-
-        // 2️⃣ 取得要刪除的購物車項目 id
+        //  取得要刪除的購物車項目 id
         String idStr = request.getParameter("cartItemId");
         if (idStr == null || idStr.isEmpty()) {
-            response.sendRedirect("Cart");
+            //response.sendRedirect("Cart");
+            response.sendRedirect(request.getContextPath() + "/Cart");
             return;
         }
 
@@ -38,15 +39,17 @@ public class DeleteCartItemServlet extends HttpServlet {
         try {
             cartItemId = Integer.parseInt(idStr);
         } catch (NumberFormatException e) {
-            response.sendRedirect("Cart");
+        	//response.sendRedirect("Cart");
+        	response.sendRedirect(request.getContextPath() + "/Cart");
             return;
         }
 
-        // 3️⃣ 呼叫 DAO 刪除
+        // 3 呼叫 DAO 刪除
         CartItemDAO dao = new CartItemDAO();
         dao.deleteItem(cartItemId);
 
-        // 4️⃣ 刪完回購物車
-        response.sendRedirect("Cart");
+        //  刪完回購物車
+      //response.sendRedirect("Cart");
+        response.sendRedirect(request.getContextPath() + "/Cart");
     }
 }

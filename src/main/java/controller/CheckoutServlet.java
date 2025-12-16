@@ -22,61 +22,66 @@ public class CheckoutServlet extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
 
-        // 1️⃣ 檢查登入
-        HttpSession session = request.getSession(false);
-        User loginUser = null;
-        if (session != null) {
-            loginUser = (User) session.getAttribute("loginUser");
-        }
-        if (loginUser == null) {
-            response.sendRedirect("Login");
-            return;
-        }
+//        //  檢查登入
+//        HttpSession session = request.getSession(false);
+//        User loginUser = null;
+//        if (session != null) {
+//            loginUser = (User) session.getAttribute("loginUser");
+//        }
+//        if (loginUser == null) {
+//            response.sendRedirect("Login");
+//            return;
+//        }
+        User loginUser = (User) request.getSession(false).getAttribute("loginUser");
 
         int userId = loginUser.getId();
+
 
         CartItemDAO cartDao = new CartItemDAO();
         ProductDAO productDao = new ProductDAO();
         OrderDAO orderDao = new OrderDAO();
 
-        // 2️⃣ 取得購物車內容
+        // 取得購物車內容a
+        String ctx = request.getContextPath();
+        
         List<CartItem> cartItems = cartDao.getCartItemsByUser(userId);
         if (cartItems == null || cartItems.isEmpty()) {
             // 購物車為空，不給結帳
-            response.sendRedirect("Cart?error=empty");
+        	response.sendRedirect(ctx + "/Cart?error=empty");
             return;
         }
 
-        // 3️⃣ 檢查庫存 + 計算總金額
+        // 檢查庫存 + 計算總金額
         double totalAmount = 0;
         for (CartItem item : cartItems) {
             Product p = productDao.getProductById(item.getProductId());
             if (p == null) {
                 // 商品不存在 → 直接退回購物車
-                response.sendRedirect("Cart?error=product_not_found");
+            	response.sendRedirect(ctx + "/Cart?error=product_not_found");
                 return;
             }
 
             int buyQty = item.getQuantity();
             if (buyQty > p.getStock()) {
                 // 庫存不足
-                response.sendRedirect("Cart?error=out_of_stock");
+            	response.sendRedirect(ctx + "/Cart?error=out_of_stock");
                 return;
             }
-
-            double subTotal = p.getPrice() * buyQty;
-            totalAmount += subTotal;
+            
+            totalAmount += p.getPrice() * buyQty;
+//            double subTotal = p.getPrice() * buyQty;
+//            totalAmount += subTotal;
         }
 
-        // 4️⃣ 建立訂單（orders）
+        //建立訂單（orders）
         int orderId = orderDao.createOrder(userId, totalAmount);
         if (orderId <= 0) {
             // 建立訂單失敗
-            response.sendRedirect("Cart?error=order_failed");
+        	response.sendRedirect(ctx + "/Cart?error=order_failed");
             return;
         }
 
-        // 5️⃣ 建立訂單明細 + 扣庫存
+        // 建立訂單明細 + 扣庫存
         for (CartItem item : cartItems) {
             Product p = productDao.getProductById(item.getProductId());
 

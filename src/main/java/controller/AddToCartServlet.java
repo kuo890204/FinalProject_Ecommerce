@@ -21,19 +21,22 @@ public class AddToCartServlet extends HttpServlet {
 
         request.setCharacterEncoding("UTF-8");
 
-        // 檢查是否登入（未登入 → 去 Login）
-        HttpSession session = request.getSession(false); // false = 不建立新的
-        User loginUser = null;
-        if (session != null) {
-            loginUser = (User) session.getAttribute("loginUser");
-        }
+//        // 檢查是否登入（未登入 → 去 Login）
+//        HttpSession session = request.getSession(false); // false = 不建立新的
+//        User loginUser = null;
+//        if (session != null) {
+//            loginUser = (User) session.getAttribute("loginUser");
+//        }
 
-        if (loginUser == null) {
-            // 尚未登入 → 導去登入畫面
-            response.sendRedirect("Login");
-            return;
-        }
-
+//        if (loginUser == null) {
+//            // 尚未登入 → 導去登入畫面
+//            response.sendRedirect("Login");
+//            return;
+//        }
+        
+        User loginUser = (User) request.getSession(false).getAttribute("loginUser");
+        int userId = loginUser.getId();
+        
         // 取得商品 id（從網址 / 表單的 productId）
         String idStr = request.getParameter("productId");
         if (idStr == null || idStr.isEmpty()) {
@@ -51,7 +54,7 @@ public class AddToCartServlet extends HttpServlet {
             return;
         }
 
-        // 這次要加幾個？先固定 1
+        // 固定 +1
         int addQty = 1;
 
         ProductDAO productDAO = new ProductDAO();
@@ -66,7 +69,6 @@ public class AddToCartServlet extends HttpServlet {
         }
 
         // 查目前購物車裡已經有幾個這個商品
-        int userId = loginUser.getId();
         int currentQty = 0;
 
         List<CartItem> cartItems = cartItemDAO.getCartItemsByUser(userId);
@@ -90,7 +92,8 @@ public class AddToCartServlet extends HttpServlet {
         cartItemDAO.addOrUpdateItem(userId, productId, addQty);
 
         // 加入成功 → 導到購物車頁
-        response.sendRedirect("Cart");
+        response.sendRedirect(request.getContextPath() + "/Cart");
+//        response.sendRedirect("Cart");
     }
 
     @Override

@@ -9,7 +9,7 @@ import dao.ProductDAO;
 import model.Product;
 import model.User;
 
-@WebServlet("/ProductEdit")
+@WebServlet({"/ProductEdit", "/admin/products/edit"})
 public class ProductEditServlet extends HttpServlet {
 
     // 顯示編輯畫面（GET /ProductEdit?id=1）
