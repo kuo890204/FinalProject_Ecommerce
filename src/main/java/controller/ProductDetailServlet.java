@@ -8,7 +8,7 @@ import javax.servlet.http.*;
 import dao.ProductDAO;
 import model.Product;
 
-@WebServlet({"/ProductDelete", "/admin/products/delete"})
+@WebServlet("/ProductDetail")
 public class ProductDetailServlet extends HttpServlet {
 
     @Override
@@ -22,7 +22,7 @@ public class ProductDetailServlet extends HttpServlet {
             // 安全一點：防止 id 是空的或亂打字
             if (idStr == null || idStr.isEmpty()) {
                 // 沒給 id 就導回商品列表或顯示錯誤
-                response.sendRedirect("ProductList");
+            	response.sendRedirect(request.getContextPath() + "/ProductList");
                 return;
             }
 
@@ -48,7 +48,7 @@ public class ProductDetailServlet extends HttpServlet {
 
         } catch (NumberFormatException e) {
             // id 不是數字，就當作錯誤處理
-            response.sendRedirect("ProductList");
+        	response.sendRedirect(request.getContextPath() + "/ProductList");
         }
     }
 }
