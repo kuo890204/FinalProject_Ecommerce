@@ -1,0 +1,6 @@
+{
+  "java.jdt.ls.java.home": "C:\\Users\\hykuo\\scoop\\apps\\temurin21-jdk\\current",
+  "java.configuration.maven.userSettings": null,
+  "java.import.maven.enabled": true,
+  "java.compile.nullAnalysis.mode": "disabled"
+}
