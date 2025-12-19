@@ -20,9 +20,10 @@
 <h2>商品後台管理</h2>
 
 <p>
-    <a href="ProductAdd">＋ 新增商品</a>
+    <a href="<%= ctx %>/admin/products/add">＋ 新增商品</a>
     |
-    <a href="<%= ctx %>/admin/orders">訂單管理</a>
+   	<a href="<%= ctx %>/admin/orders">訂單管理</a>
+
 </p>
 
 
@@ -49,15 +50,20 @@
         <td><%= p.getCategory() %></td>	
 
         <td>
-            <a href="ProductEdit?id=<%= p.getId() %>">編輯</a> |
-            <a href="ProductDelete?id=<%= p.getId() %>"
-               onclick="return confirm('確定要刪除嗎？');">
-               刪除
-            </a>
-        </td>
+           <a href="<%= ctx %>/admin/products/edit?id=<%= p.getId() %>">編輯</a> |
+           <a href="<%= ctx %>/admin/products/delete?id=<%= p.getId() %>"
+              onclick="return confirm('確定要刪除嗎？');">刪除</a>
+
+   </td>
     </tr>
     <%
             }
+        } else {
+    %>
+    <tr>
+        <td colspan="6">目前沒有商品資料</td>
+    </tr>
+    <%
         }
     %>
 

@@ -9,15 +9,17 @@ import dao.ProductDAO;
 import model.Product;
 import model.User;
 
-@WebServlet({"/ProductEdit", "/admin/products/edit"})
+@WebServlet("/admin/products/edit")
 public class ProductEditServlet extends HttpServlet {
 
     // 顯示編輯畫面（GET /ProductEdit?id=1）
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        // 1️⃣ 檢查登入 & 權限
+    	
+     	String ctx = request.getContextPath();
+    	
+        // 檢查登入 & 權限
         HttpSession session = request.getSession(false);
         User loginUser = null;
         if (session != null) {
@@ -29,10 +31,10 @@ public class ProductEditServlet extends HttpServlet {
             return;
         }
 
-        // 2️⃣ 取得要編輯的商品 id
+        // 取得要編輯的商品 id
         String idStr = request.getParameter("id");
         if (idStr == null || idStr.isEmpty()) {
-            response.sendRedirect("AdminProductList");
+        	response.sendRedirect(ctx + "/admin/products");
             return;
         }
 
@@ -40,24 +42,24 @@ public class ProductEditServlet extends HttpServlet {
         try {
             id = Integer.parseInt(idStr);
         } catch (NumberFormatException e) {
-            response.sendRedirect("AdminProductList");
+        	response.sendRedirect(ctx + "/admin/products");
             return;
         }
 
-        // 3️⃣ 從 DB 把商品撈出來
+        //  從 DB 把商品撈出來
         ProductDAO dao = new ProductDAO();
         Product product = dao.getProductById(id);
 
         if (product == null) {
             // 沒這筆商品 → 回列表
-            response.sendRedirect("AdminProductList");
+        	response.sendRedirect(ctx + "/admin/products");
             return;
         }
 
-        // 4️⃣ 放到 request，給 JSP 用
+        //  放到 request，給 JSP 用
         request.setAttribute("product", product);
 
-        request.getRequestDispatcher("product_edit.jsp").forward(request, response);
+        request.getRequestDispatcher("/admin/product_edit.jsp").forward(request, response);
     }
 
     // 處理修改送出（POST）
@@ -66,7 +68,7 @@ public class ProductEditServlet extends HttpServlet {
             throws ServletException, IOException {
 
         request.setCharacterEncoding("UTF-8");
-
+     	String ctx = request.getContextPath();
         // 1️⃣ 再檢查一次權限（保險）
         HttpSession session = request.getSession(false);
         User loginUser = null;
@@ -91,11 +93,11 @@ public class ProductEditServlet extends HttpServlet {
         try {
             id = Integer.parseInt(idStr);
         } catch (NumberFormatException e) {
-            response.sendRedirect("AdminProductList");
+        	response.sendRedirect(ctx + "/admin/products");
             return;
         }
 
-        // 3️⃣ 必填檢查
+        // 必填檢查
         if (name == null || name.isEmpty() ||
             priceStr == null || priceStr.isEmpty() ||
             stockStr == null || stockStr.isEmpty()) {
@@ -109,7 +111,7 @@ public class ProductEditServlet extends HttpServlet {
             request.setAttribute("category", category);
             request.setAttribute("image", image);
 
-            request.getRequestDispatcher("product_edit.jsp").forward(request, response);
+            request.getRequestDispatcher("/admin/product_edit.jsp").forward(request, response);
             return;
         }
 
@@ -128,7 +130,7 @@ public class ProductEditServlet extends HttpServlet {
             request.setAttribute("category", category);
             request.setAttribute("image", image);
 
-            request.getRequestDispatcher("product_edit.jsp").forward(request, response);
+            request.getRequestDispatcher("/admin/product_edit.jsp").forward(request, response);
             return;
         }
 
@@ -147,18 +149,18 @@ public class ProductEditServlet extends HttpServlet {
 
         if (ok) {
             // 修改成功 → 回列表
-            response.sendRedirect("AdminProductList");
+        	response.sendRedirect(ctx + "/admin/products");
         } else {
             // 修改失敗 → 顯示錯誤
-            request.setAttribute("error", "更新商品失敗，請稍後再試。");
-            request.setAttribute("id", id);
+	            request.setAttribute("error", "更新商品失敗，請稍後再試。");
+	            request.setAttribute("id", id);
             request.setAttribute("name", name);
             request.setAttribute("price", priceStr);
             request.setAttribute("stock", stockStr);
             request.setAttribute("category", category);
             request.setAttribute("image", image);
 
-            request.getRequestDispatcher("product_edit.jsp").forward(request, response);
+            request.getRequestDispatcher("/admin/product_edit.jsp").forward(request, response);
         }
     }
 }

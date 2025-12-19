@@ -13,6 +13,10 @@
 <h2>編輯商品</h2>
 
 <%
+  String ctx = request.getContextPath();
+%>
+
+<%
     String error = (String) request.getAttribute("error");
     if (error != null) {
 %>
@@ -52,9 +56,8 @@
         imageVal    = imageAttr != null ? imageAttr.toString() : "";
     }
 %>
-
-<form action="ProductEdit" method="post">
-
+	
+<form action="<%= ctx %>/admin/products/edit" method="post">
     <!-- id 用 hidden 帶回去 -->
     <input type="hidden" name="id" value="<%= idVal %>">
 
@@ -85,7 +88,7 @@
 
     <p>
         <input type="submit" value="儲存修改">
-        <a href="AdminProductList">回列表</a>
+        <a href="<%= ctx %>/admin/products">返回列表</a>
     </p>
 </form>
 

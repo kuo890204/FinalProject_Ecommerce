@@ -19,8 +19,11 @@
 <%
     }
 %>
+<%
+  String ctx = request.getContextPath();
+%>
 
-<form action="ProductAdd" method="post">
+<form action="<%= ctx %>/admin/products/add" method="post">
 
     <p>
         名稱：
@@ -53,8 +56,8 @@
     </p>
 
     <p>
-        <input type="submit" value="新增商品">
-        <a href="AdminProductList">回列表</a>
+         <button type="submit">新增商品</button>
+        <a href="<%= ctx %>/admin/products">返回列表</a>
     </p>
 </form>
 

@@ -50,5 +50,10 @@ public class AdminOrderDetailServlet extends HttpServlet {
 
         RequestDispatcher rd = request.getRequestDispatcher("/admin/admin_order_detail.jsp");
         rd.forward(request, response);
+        System.out.println("DETAIL idStr=" + idStr);
+
+        System.out.println("DETAIL orderId=" + orderId);
+
+        System.out.println("DETAIL order=" + order);
     }
 }

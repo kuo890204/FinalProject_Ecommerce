@@ -64,42 +64,41 @@ public class OrderDAO {
     // 之後如果要查詢訂單可以用這兩個（暫時不一定用到，但先放著）
 
     public Order getOrderById(int orderId) {
-    	String sql =
-    	        "SELECT o.id, o.user_id, o.total_amount, o.status, o.created_at, " +
-    	        "       u.name AS user_name, u.username " +
-    	        "FROM orders o " +
-    	        "JOIN users u ON o.user_id = u.id " +
-    	        "WHERE o.id = ?";
+        String sql =
+            "SELECT o.id, o.user_id, o.total_amount, o.status, o.created_at, " +
+            "       u.name AS user_name, u.username " +
+            "FROM orders o " +
+            "LEFT JOIN users u ON o.user_id = u.id " +
+            "WHERE o.id = ?";
 
-    	    try (Connection conn = DatabaseUtil.getConnection();
-    	         PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-    	        ps.setInt(1, orderId);
+            ps.setInt(1, orderId);
 
-    	        try (ResultSet rs = ps.executeQuery()) {
-    	            if (rs.next()) {
-    	                Order o = new Order();
-    	                o.setId(rs.getInt("id"));
-    	                o.setUserId(rs.getInt("user_id"));
-    	                o.setTotalAmount(rs.getDouble("total_amount"));
-    	                o.setStatus(rs.getString("status"));
-    	                o.setCreatedAt(rs.getTimestamp("created_at"));
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Order o = new Order();
+                    o.setId(rs.getInt("id"));
+                    o.setUserId(rs.getInt("user_id"));
+                    o.setTotalAmount(rs.getDouble("total_amount"));
+                    o.setStatus(rs.getString("status"));
+                    o.setCreatedAt(rs.getTimestamp("created_at"));
 
-    	                String name = rs.getString("user_name");
-    	                if (name == null || name.trim().isEmpty()) {
-    	                    name = rs.getString("username");
-    	                }
-    	                o.setUserName(name);
+                    String name = rs.getString("user_name");
+                    if (name == null || name.trim().isEmpty()) {
+                        name = rs.getString("username");
+                    }
+                    o.setUserName(name);
 
-    	                return o;
-    	            }
-    	        }
-
-    	    } catch (Exception e) {
-    	        e.printStackTrace();
-    	    }
-    	    return null;
-    	}
+                    return o;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public List<OrderItem> getOrderItemsByOrderId(int orderId) {
         List<OrderItem> list = new ArrayList<>();
@@ -136,7 +135,7 @@ public class OrderDAO {
     public List<Order> getAllOrders() {
         List<Order> list = new ArrayList<>();
 
-        String sql =
+        String sql =	
             "SELECT o.id, o.user_id, o.total_amount, o.status, o.created_at, " +
             "       u.name AS user_name, u.username " +
             "FROM orders o " +
