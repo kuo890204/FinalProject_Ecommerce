@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mvn clean package:*)",
+      "Bash(powershell:*)",
+      "Bash(jar -xf:*)",
+      "Bash(startup.bat)",
+      "Bash(curl:*)"
+    ]
+  }
+}

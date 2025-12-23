@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>導航列預覽 - 新版 vs 舊版</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #F9FAFB;
+        }
+        .preview-section {
+            margin-bottom: 3rem;
+        }
+        .preview-label {
+            background: #111827;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            font-weight: 700;
+            font-size: 1.125rem;
+        }
+        .content-demo {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* === 舊版樣式 === */
+        .old-header {
+            padding: 10px;
+            background-color: #f0f0f0;
+            margin-bottom: 20px;
+        }
+        .old-header a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .old-header a:hover {
+            text-decoration: underline;
+        }
+
+        /* === 新版樣式（日系風格） === */
+        .navbar {
+            background: #FFFFFF;
+            padding: 1rem 0;
+            box-shadow: 0 1px 0 #E8E3D8;
+            border-bottom: 3px solid #D4A574;
+        }
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar-brand {
+            color: #D4A574;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+        .navbar-brand:hover {
+            color: #B88A5F;
+            text-decoration: none;
+        }
+        .navbar-menu {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        .navbar-link {
+            color: #4A4A4A;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+            position: relative;
+        }
+        .navbar-link:hover {
+            color: #D4A574;
+            text-decoration: none;
+        }
+        .navbar-link:hover::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #D4A574;
+        }
+        .navbar-user {
+            color: #8B8B8B;
+            font-weight: 400;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 舊版 Header -->
+    <div class="preview-section">
+        <div class="preview-label">🔴 舊版導航列（目前使用中）</div>
+        <header class="old-header">
+            <a href="#">首頁</a>
+            | <a href="#">查看購物車</a>
+            | 嗨，王小明！
+            | <a href="#">登出</a>
+            | <a href="#">管理後台</a>
+            | <a href="#">訂單管理</a>
+        </header>
+        <div class="content-demo">
+            <h2>這是頁面內容區域</h2>
+            <p>可以看到舊版導航列的樣式比較陽春，只有簡單的灰色背景。</p>
+        </div>
+    </div>
+
+    <hr style="border: 3px solid #EF4444; margin: 3rem 0;">
+
+    <!-- 新版 Header -->
+    <div class="preview-section">
+        <div class="preview-label">🟢 新版導航列（美化版）</div>
+        <header class="navbar">
+            <div class="navbar-container">
+                <a href="#" class="navbar-brand">🛒 電商系統</a>
+                <nav class="navbar-menu">
+                    <a href="#" class="navbar-link">商品列表</a>
+                    <a href="#" class="navbar-link">購物車</a>
+                    <span class="navbar-user">嗨，王小明</span>
+                    <a href="#" class="navbar-link">商品管理</a>
+                    <a href="#" class="navbar-link">訂單管理</a>
+                    <a href="#" class="navbar-link">登出</a>
+                </nav>
+            </div>
+        </header>
+        <div class="content-demo">
+            <h2>這是頁面內容區域</h2>
+            <p>新版使用漸層色背景、更清晰的間距、hover 效果，整體更專業。</p>
+        </div>
+    </div>
+
+    <hr style="border: 3px solid #10B981; margin: 3rem 0;">
+
+    <!-- 未登入狀態預覽 -->
+    <div class="preview-section">
+        <div class="preview-label">🟡 新版導航列（未登入狀態）</div>
+        <header class="navbar">
+            <div class="navbar-container">
+                <a href="#" class="navbar-brand">🛒 電商系統</a>
+                <nav class="navbar-menu">
+                    <a href="#" class="navbar-link">商品列表</a>
+                    <a href="#" class="navbar-link">購物車</a>
+                    <a href="#" class="navbar-link">登入</a>
+                    <a href="#" class="navbar-link">註冊</a>
+                </nav>
+            </div>
+        </header>
+        <div class="content-demo">
+            <h2>這是未登入時的導航列</h2>
+            <p>只顯示：商品列表、購物車、登入、註冊。</p>
+        </div>
+    </div>
+
+</body>
+</html>
