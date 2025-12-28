@@ -59,11 +59,22 @@ body {
     transition: all 0.3s;
     display: flex;
     flex-direction: column;
+    cursor: pointer;
+    position: relative;
 }
 
 .product-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 8px 16px rgba(212, 165, 116, 0.15);
+}
+
+.product-card-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
 }
 
 /* 商品圖片區域 */
@@ -76,6 +87,13 @@ body {
     justify-content: center;
     font-size: 4rem;
     border-bottom: 2px solid #E8E3D8;
+    overflow: hidden;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 /* 商品資訊區域 */
@@ -137,6 +155,8 @@ body {
 /* 商品底部操作區 */
 .product-actions {
     margin-top: auto;
+    position: relative;
+    z-index: 2;
 }
 
 .btn-add-cart {
@@ -224,14 +244,20 @@ body {
         %>
 
         <div class="product-card">
+            <a href="ProductDetail?id=<%= p.getId() %>" class="product-card-link"></a>
+
             <div class="product-image">
-                📦
+                <% if (p.getImage() != null && !p.getImage().isEmpty()) { %>
+                    <img src="<%= p.getImage() %>" alt="<%= p.getName() %>">
+                <% } else { %>
+                    📦
+                <% } %>
             </div>
 
             <div class="product-info">
-                <a href="ProductDetail?id=<%= p.getId() %>" class="product-name">
+                <div class="product-name">
                     <%= p.getName() %>
-                </a>
+                </div>
 
                 <span class="product-category"><%= p.getCategory() %></span>
 

@@ -149,9 +149,13 @@ public class CartItemDAO {
             e.printStackTrace();
         }
     }
- // 取得單一購物車項目（用 id 查）
+ // 取得單一購物車項目（用 id 查，包含商品資訊）
     public CartItem getCartItemById(int cartItemId) {
-        String sql = "SELECT user_id, product_id, quantity FROM cart_items WHERE id = ?";
+        String sql = "SELECT c.id AS cart_id, c.user_id, c.product_id, c.quantity, " +
+                     "       p.id AS p_id, p.name, p.price, p.stock, p.category, p.image " +
+                     "FROM cart_items c " +
+                     "JOIN products p ON c.product_id = p.id " +
+                     "WHERE c.id = ?";
 
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -161,10 +165,20 @@ public class CartItemDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     CartItem item = new CartItem();
-                    item.setId(cartItemId);
+                    item.setId(rs.getInt("cart_id"));
                     item.setUserId(rs.getInt("user_id"));
                     item.setProductId(rs.getInt("product_id"));
                     item.setQuantity(rs.getInt("quantity"));
+
+                    Product p = new Product();
+                    p.setId(rs.getInt("p_id"));
+                    p.setName(rs.getString("name"));
+                    p.setPrice(rs.getDouble("price"));
+                    p.setStock(rs.getInt("stock"));
+                    p.setCategory(rs.getString("category"));
+                    p.setImage(rs.getString("image"));
+
+                    item.setProduct(p);
                     return item;
                 }
             }
@@ -176,7 +190,7 @@ public class CartItemDAO {
         return null;
     }
 
-   
+
 
 
 }

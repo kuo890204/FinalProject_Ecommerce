@@ -235,6 +235,48 @@ public class OrderDAO {
         }
     }
 
+    // 🔹 4. 用戶用：根據用戶 ID 查詢該用戶的所有訂單
+    public List<Order> getOrdersByUserId(int userId) {
+        List<Order> list = new ArrayList<>();
 
-    
+        String sql =
+            "SELECT o.id, o.user_id, o.total_amount, o.status, o.created_at, " +
+            "       u.name AS user_name, u.username " +
+            "FROM orders o " +
+            "JOIN users u ON o.user_id = u.id " +
+            "WHERE o.user_id = ? " +
+            "ORDER BY o.created_at DESC";
+
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Order o = new Order();
+                    o.setId(rs.getInt("id"));
+                    o.setUserId(rs.getInt("user_id"));
+                    o.setTotalAmount(rs.getDouble("total_amount"));
+                    o.setStatus(rs.getString("status"));
+                    o.setCreatedAt(rs.getTimestamp("created_at"));
+
+                    String name = rs.getString("user_name");
+                    if (name == null || name.trim().isEmpty()) {
+                        name = rs.getString("username");
+                    }
+                    o.setUserName(name);
+
+                    list.add(o);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+
 }

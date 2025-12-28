@@ -34,6 +34,11 @@
     border-bottom: 1px solid #F5F2ED;
     color: #4A4A4A;
 }
+
+.cart-table td a:hover {
+    color: #B88A5F !important;
+    text-decoration: underline !important;
+}
 .cart-table tr:hover {
     background-color: #FFFBF7;
 }
@@ -87,6 +92,7 @@
     margin-top: 1.5rem;
     display: flex;
     gap: 1rem;
+    flex-wrap: wrap;
 }
 .container {
     max-width: 1200px;
@@ -127,6 +133,11 @@
     transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(156, 175, 136, 0.3);
 }
+.btn-success:disabled {
+    background-color: #E8E3D8;
+    cursor: not-allowed;
+    transform: none;
+}
 .btn-danger {
     background-color: #E8B4B8;
     color: white;
@@ -137,11 +148,227 @@
     transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(232, 180, 184, 0.3);
 }
+.btn-danger:disabled {
+    background-color: #E8E3D8;
+    cursor: not-allowed;
+    transform: none;
+}
 .btn-sm {
     padding: 0.5rem 1rem;
     font-size: 0.875rem;
 }
+
+/* 批量操作工具列 */
+.bulk-actions-bar {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(212, 165, 116, 0.08);
+    border: 1px solid #E8E3D8;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.bulk-actions-bar label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.bulk-actions-bar input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.selected-info {
+    color: #D4A574;
+    font-weight: 600;
+    margin-left: auto;
+}
+
+.cart-checkbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
 </style>
+
+<script>
+// 定義全局函數，避免 onchange 調用時找不到函數
+function toggleSelectAll(event) {
+    const headerCheckbox = document.getElementById('headerCheckbox');
+    const selectAllCheckbox = document.getElementById('selectAll');
+    const checkboxes = document.getElementsByName('cartItemIds');
+
+    // 同步兩個全選框
+    if (headerCheckbox && selectAllCheckbox) {
+        // 判斷是哪個checkbox被點擊,然後同步另一個
+        if (event && event.target) {
+            if (event.target.id === 'selectAll') {
+                headerCheckbox.checked = selectAllCheckbox.checked;
+            } else if (event.target.id === 'headerCheckbox') {
+                selectAllCheckbox.checked = headerCheckbox.checked;
+            }
+        }
+    }
+
+    const isChecked = selectAllCheckbox ? selectAllCheckbox.checked : headerCheckbox.checked;
+
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = isChecked;
+    });
+
+    updateBulkActions();
+}
+
+function updateBulkActions() {
+    const checkboxes = document.getElementsByName('cartItemIds');
+    const checkedBoxes = Array.from(checkboxes).filter(cb => cb.checked);
+    const count = checkedBoxes.length;
+
+    const bulkActionsBar = document.getElementById('bulkActionsBar');
+    const bulkCheckoutBtn = document.getElementById('bulkCheckoutBtn');
+    const bulkRemoveBtn = document.getElementById('bulkRemoveBtn');
+    const selectedCount = document.getElementById('selectedCount');
+    const selectedInfo = document.getElementById('selectedInfo');
+    const headerCheckbox = document.getElementById('headerCheckbox');
+    const selectAllCheckbox = document.getElementById('selectAll');
+
+    if (!bulkCheckoutBtn || !bulkRemoveBtn) return;
+
+    // 計算選中商品的總金額
+    let selectedTotal = 0;
+    checkedBoxes.forEach(cb => {
+        selectedTotal += parseFloat(cb.dataset.subtotal || 0);
+    });
+
+    // 更新計數
+    if (selectedCount) selectedCount.textContent = count;
+
+    // 更新批量操作欄狀態
+    if (count > 0) {
+        bulkCheckoutBtn.disabled = false;
+        bulkRemoveBtn.disabled = false;
+        if (selectedInfo) selectedInfo.textContent = '已選擇 ' + count + ' 項，小計：$' + Math.round(selectedTotal).toLocaleString();
+    } else {
+        bulkCheckoutBtn.disabled = true;
+        bulkRemoveBtn.disabled = true;
+        if (selectedInfo) selectedInfo.textContent = '請勾選商品';
+    }
+
+    // 更新底部按鈕文字和功能
+    const removeBtnText = document.getElementById('removeBtnText');
+    const checkoutBtnText = document.getElementById('checkoutBtnText');
+
+    if (removeBtnText && checkoutBtnText) {
+        if (count > 0) {
+            removeBtnText.textContent = '移除選中商品 (' + count + ')';
+            checkoutBtnText.textContent = '結帳選中商品 (' + count + ')';
+        } else {
+            removeBtnText.textContent = '清空購物車';
+            checkoutBtnText.textContent = '全部結帳';
+        }
+    }
+
+    // 更新全選框狀態
+    if (headerCheckbox && selectAllCheckbox) {
+        if (count === checkboxes.length && checkboxes.length > 0) {
+            headerCheckbox.checked = true;
+            selectAllCheckbox.checked = true;
+            headerCheckbox.indeterminate = false;
+        } else if (count > 0) {
+            headerCheckbox.checked = false;
+            selectAllCheckbox.checked = false;
+            headerCheckbox.indeterminate = true;
+        } else {
+            headerCheckbox.checked = false;
+            selectAllCheckbox.checked = false;
+            headerCheckbox.indeterminate = false;
+        }
+    }
+}
+
+function checkoutSelected() {
+    const checkboxes = document.getElementsByName('cartItemIds');
+    const checkedBoxes = Array.from(checkboxes).filter(cb => cb.checked);
+    const count = checkedBoxes.length;
+
+    if (count === 0) {
+        alert('請至少選擇一項商品');
+        return;
+    }
+
+    if (confirm('確定要結帳選中的 ' + count + ' 項商品嗎？')) {
+        const form = document.getElementById('bulkCheckoutForm');
+        checkedBoxes.forEach(cb => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'cartItemIds';
+            input.value = cb.value;
+            form.appendChild(input);
+        });
+        form.submit();
+    }
+}
+
+function removeSelected() {
+    const checkboxes = document.getElementsByName('cartItemIds');
+    const checkedBoxes = Array.from(checkboxes).filter(cb => cb.checked);
+    const count = checkedBoxes.length;
+
+    if (count === 0) {
+        alert('請至少選擇一項商品');
+        return;
+    }
+
+    if (confirm('確定要移除選中的 ' + count + ' 項商品嗎？')) {
+        const form = document.getElementById('bulkRemoveForm');
+        checkedBoxes.forEach(cb => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'cartItemIds';
+            input.value = cb.value;
+            form.appendChild(input);
+        });
+        form.submit();
+    }
+}
+
+function handleRemove() {
+    const checkboxes = document.getElementsByName('cartItemIds');
+    const checkedBoxes = Array.from(checkboxes).filter(cb => cb.checked);
+    const count = checkedBoxes.length;
+
+    if (count > 0) {
+        removeSelected();
+    } else {
+        if (confirm('確定要清空購物車嗎？')) {
+            document.getElementById('clearCartForm').submit();
+        }
+    }
+}
+
+function handleCheckout() {
+    const checkboxes = document.getElementsByName('cartItemIds');
+    const checkedBoxes = Array.from(checkboxes).filter(cb => cb.checked);
+    const count = checkedBoxes.length;
+
+    if (count > 0) {
+        checkoutSelected();
+    } else {
+        if (confirm('確定要送出訂單嗎？')) {
+            document.getElementById('checkoutAllForm').submit();
+        }
+    }
+}
+</script>
+
 </head>
 
 <%
@@ -169,9 +396,27 @@
             double total = 0;
     %>
 
+    <!-- 批量操作工具列 -->
+    <div class="bulk-actions-bar" id="bulkActionsBar">
+        <label>
+            <input type="checkbox" id="selectAll" onchange="toggleSelectAll(event)">
+            全選/取消全選
+        </label>
+        <button type="button" class="btn btn-success btn-sm" onclick="checkoutSelected()" id="bulkCheckoutBtn" disabled>
+            💳 結帳選中商品 (<span id="selectedCount">0</span>)
+        </button>
+        <button type="button" class="btn btn-danger btn-sm" onclick="removeSelected()" id="bulkRemoveBtn" disabled>
+            🗑️ 移除選中商品
+        </button>
+        <span class="selected-info" id="selectedInfo">請勾選商品</span>
+    </div>
+
     <table class="cart-table">
         <thead>
             <tr>
+                <th style="width: 60px;">
+                    <input type="checkbox" class="cart-checkbox" id="headerCheckbox" onchange="toggleSelectAll(event)">
+                </th>
                 <th>商品名稱</th>
                 <th style="width: 120px;">單價</th>
                 <th style="width: 180px;">數量</th>
@@ -188,7 +433,15 @@
                 total += subTotal;
         %>
             <tr>
-                <td><%= p.getName() %></td>
+                <td>
+                    <input type="checkbox" class="cart-checkbox" name="cartItemIds" value="<%= item.getId() %>"
+                           data-subtotal="<%= subTotal %>" onchange="updateBulkActions()">
+                </td>
+                <td>
+                    <a href="<%= ctx %>/ProductDetail?id=<%= p.getId() %>" style="color: #D4A574; text-decoration: none; font-weight: 500; transition: color 0.2s;">
+                        <%= p.getName() %>
+                    </a>
+                </td>
                 <td>$<%= String.format("%,d", (int)p.getPrice()) %></td>
                 <td>
                     <div class="quantity-control">
@@ -226,7 +479,7 @@
             }
         %>
             <tr class="cart-total-row">
-                <td colspan="3" style="text-align: right;">總金額：</td>
+                <td colspan="4" style="text-align: right;">總金額：</td>
                 <td colspan="2" style="color: #D4A574; font-size: 1.25rem;">
                     $<%= String.format("%,d", (int)total) %>
                 </td>
@@ -235,18 +488,24 @@
     </table>
 
     <div class="action-buttons">
-        <form action="<%= ctx %>/ClearCart" method="post" style="display:inline;">
-            <button type="submit" class="btn btn-danger" onclick="return confirm('確定要清空購物車嗎？');">
-                清空購物車
-            </button>
-        </form>
-        <form action="<%= ctx %>/Checkout" method="post" style="display:inline;" onsubmit="return confirm('確定要送出訂單嗎？');">
-            <button type="submit" class="btn btn-success">
-                前往結帳
-            </button>
-        </form>
+        <!-- 移除按鈕：根據是否有選取切換功能 -->
+        <button type="button" class="btn btn-danger" id="removeBtn" onclick="handleRemove()">
+            <span id="removeBtnText">清空購物車</span>
+        </button>
+
+        <!-- 結帳按鈕：根據是否有選取切換功能 -->
+        <button type="button" class="btn btn-success" id="checkoutBtn" onclick="handleCheckout()">
+            <span id="checkoutBtnText">全部結帳</span>
+        </button>
+
         <a href="<%= ctx %>/ProductList" class="btn btn-primary">繼續購物</a>
     </div>
+
+    <!-- 隱藏表單 -->
+    <form id="clearCartForm" action="<%= ctx %>/ClearCart" method="post" style="display:none;"></form>
+    <form id="checkoutAllForm" action="<%= ctx %>/Checkout" method="post" style="display:none;"></form>
+    <form id="bulkCheckoutForm" action="<%= ctx %>/CheckoutSelected" method="post" style="display:none;"></form>
+    <form id="bulkRemoveForm" action="<%= ctx %>/RemoveSelectedCartItems" method="post" style="display:none;"></form>
 
     <%
         }

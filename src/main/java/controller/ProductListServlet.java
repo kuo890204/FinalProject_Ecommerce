@@ -20,12 +20,26 @@ public class ProductListServlet extends HttpServlet {
         // 1️⃣ 建立 DAO 物件（負責去資料庫抓商品資料）
         ProductDAO dao = new ProductDAO();
 
-        // 2️⃣ 呼叫 DAO 裡的方法 → 拿到所有商品（List<Product>）
-        List<Product> list = dao.getAllProducts();
+        // 取得分類參數（如果有的話）
+        String category = request.getParameter("category");
 
-        // 3️⃣ 把商品清單放進 request 物件裡，讓 JSP 可以使用
-        //    "productList" 是 JSP 取資料時要用的 key
+        // 2️⃣ 根據是否有分類參數來決定查詢方式
+        List<Product> list;
+        if (category != null && !category.trim().isEmpty()) {
+            // 根據分類篩選商品
+            list = dao.getProductsByCategory(category);
+            request.setAttribute("selectedCategory", category);
+        } else {
+            // 拿到所有商品
+            list = dao.getAllProducts();
+        }
+
+        // 取得所有分類清單（用於側邊欄）
+        List<String> categories = dao.getAllCategories();
+
+        // 3️⃣ 把商品清單和分類清單放進 request 物件裡，讓 JSP 可以使用
         request.setAttribute("productList", list);
+        request.setAttribute("categories", categories);
 
         // 4️⃣ 請求轉發（Forward）到 product_list.jsp
         //    → 把資料交給 JSP 顯示畫面

@@ -1,9 +1,20 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="model.User" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="model.Product" %>
 
 <%
     String ctx = request.getContextPath();
     User loginUser = (User) session.getAttribute("loginUser");
+
+    // 取得購物車數量
+    Map<Integer, Integer> cart = (Map<Integer, Integer>) session.getAttribute("cart");
+    int cartItemCount = 0;
+    if (cart != null && !cart.isEmpty()) {
+        for (Integer quantity : cart.values()) {
+            cartItemCount += quantity;
+        }
+    }
 %>
 
 <style>
@@ -144,6 +155,50 @@ body {
     text-align: center;
 }
 
+/* 搜尋框 */
+.search-form {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.search-input {
+    padding: 0.5rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    font-size: 0.9rem;
+    width: 200px;
+    transition: all 0.3s;
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.search-input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+    width: 250px;
+}
+
+.search-button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.search-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
 /* 響應式設計 */
 @media (max-width: 768px) {
     .navbar-container {
@@ -198,15 +253,35 @@ body {
             🛍️ 電商平台
         </a>
 
+        <!-- 搜尋框（管理員不顯示） -->
+        <% if (loginUser == null || !"admin".equals(loginUser.getRole())) { %>
+            <form action="<%= ctx %>/products/search" method="get" class="search-form">
+                <input type="text"
+                       name="keyword"
+                       class="search-input"
+                       placeholder="搜尋商品..."
+                       value="<%= request.getParameter("keyword") != null ? request.getParameter("keyword") : "" %>">
+                <button type="submit" class="search-button">🔍</button>
+            </form>
+        <% } %>
+
         <!-- 導航連結 -->
         <nav class="navbar-links">
-            <a href="<%= ctx %>/ProductList" class="navbar-link">首頁</a>
+            <!-- 首頁連結（管理員不顯示） -->
+            <% if (loginUser == null || !"admin".equals(loginUser.getRole())) { %>
+                <a href="<%= ctx %>/ProductList" class="navbar-link">首頁</a>
+                <div class="navbar-divider"></div>
+            <% } %>
 
-            <div class="navbar-divider"></div>
-
-            <a href="<%= ctx %>/Cart" class="navbar-link cart-icon">
-                🛒 購物車
-            </a>
+            <!-- 購物車（管理員不顯示） -->
+            <% if (loginUser == null || !"admin".equals(loginUser.getRole())) { %>
+                <a href="<%= ctx %>/Cart" class="navbar-link cart-icon">
+                    🛒 購物車
+                    <% if (cartItemCount > 0) { %>
+                        <span class="cart-badge"><%= cartItemCount %></span>
+                    <% } %>
+                </a>
+            <% } %>
 
             <% if (loginUser != null) { %>
                 <div class="navbar-divider"></div>
@@ -218,9 +293,16 @@ body {
                 </span>
 
                 <% if ("admin".equals(loginUser.getRole())) { %>
+                    <!-- 管理員選單 -->
                     <div class="navbar-divider"></div>
+                    <a href="<%= ctx %>/admin/products/preview" class="navbar-link admin-link">👁️ 預覽商品</a>
                     <a href="<%= ctx %>/admin/products" class="navbar-link admin-link">📦 商品管理</a>
                     <a href="<%= ctx %>/admin/orders" class="navbar-link admin-link">📋 訂單管理</a>
+                <% } else { %>
+                    <!-- 一般用戶選單 -->
+                    <div class="navbar-divider"></div>
+                    <a href="<%= ctx %>/user/profile" class="navbar-link">👤 會員資料</a>
+                    <a href="<%= ctx %>/user/orders" class="navbar-link">📋 訂單查詢</a>
                 <% } %>
 
                 <a href="<%= ctx %>/Logout" class="navbar-link logout-link">登出</a>

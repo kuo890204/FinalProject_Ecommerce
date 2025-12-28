@@ -95,11 +95,90 @@ public class UserDAO {
             String hashedPassword = PasswordUtil.hashPassword(user.getPassword());
 
             ps.setString(1, user.getUsername());
-            ps.setString(2, hashedPassword); // 存 hash 不是平文！ 
+            ps.setString(2, hashedPassword); // 存 hash 不是平文！
             ps.setString(3, user.getName());
             ps.setString(4, user.getAddress());
             ps.setString(5, user.getEmail());
             ps.setString(6, user.getRole());
+
+            int rows = ps.executeUpdate();
+            return rows > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * 根據用戶 ID 查詢用戶資料
+     */
+    public User getUserById(int userId) {
+        User user = null;
+        String sql = "SELECT * FROM users WHERE id = ?";
+
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    user = new User();
+                    user.setId(rs.getInt("id"));
+                    user.setUsername(rs.getString("username"));
+                    user.setPassword(rs.getString("password"));
+                    user.setName(rs.getString("name"));
+                    user.setAddress(rs.getString("address"));
+                    user.setEmail(rs.getString("email"));
+                    user.setRole(rs.getString("role"));
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return user;
+    }
+
+    /**
+     * 更新用戶資料（不包含密碼）
+     */
+    public boolean updateUser(User user) {
+        String sql = "UPDATE users SET name = ?, address = ?, email = ? WHERE id = ?";
+
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, user.getName());
+            ps.setString(2, user.getAddress());
+            ps.setString(3, user.getEmail());
+            ps.setInt(4, user.getId());
+
+            int rows = ps.executeUpdate();
+            return rows > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * 更新用戶密碼
+     */
+    public boolean updatePassword(int userId, String newPassword) {
+        String sql = "UPDATE users SET password = ? WHERE id = ?";
+
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            // 將新密碼進行 BCrypt 雜湊
+            String hashedPassword = PasswordUtil.hashPassword(newPassword);
+
+            ps.setString(1, hashedPassword);
+            ps.setInt(2, userId);
 
             int rows = ps.executeUpdate();
             return rows > 0;

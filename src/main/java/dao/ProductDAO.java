@@ -165,5 +165,90 @@ public class ProductDAO {         // 定義 ProductDAO 類別，專門處理「�
         }
     }
 
+    // 搜尋商品（根據名稱或分類）
+    public List<Product> searchProducts(String keyword) {
+        List<Product> list = new ArrayList<>();
+
+        String sql = "SELECT * FROM products WHERE name LIKE ? OR category LIKE ?";
+
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            String searchPattern = "%" + keyword + "%";
+            ps.setString(1, searchPattern);
+            ps.setString(2, searchPattern);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Product p = new Product();
+                    p.setId(rs.getInt("id"));
+                    p.setName(rs.getString("name"));
+                    p.setPrice(rs.getDouble("price"));
+                    p.setStock(rs.getInt("stock"));
+                    p.setCategory(rs.getString("category"));
+                    p.setImage(rs.getString("image"));
+                    list.add(p);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    // 根據分類取得商品
+    public List<Product> getProductsByCategory(String category) {
+        List<Product> list = new ArrayList<>();
+
+        String sql = "SELECT * FROM products WHERE category = ?";
+
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, category);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Product p = new Product();
+                    p.setId(rs.getInt("id"));
+                    p.setName(rs.getString("name"));
+                    p.setPrice(rs.getDouble("price"));
+                    p.setStock(rs.getInt("stock"));
+                    p.setCategory(rs.getString("category"));
+                    p.setImage(rs.getString("image"));
+                    list.add(p);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    // 取得所有分類清單
+    public List<String> getAllCategories() {
+        List<String> list = new ArrayList<>();
+
+        String sql = "SELECT DISTINCT category FROM products ORDER BY category";
+
+        try (Connection conn = DatabaseUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                list.add(rs.getString("category"));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
 
 }

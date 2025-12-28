@@ -40,8 +40,14 @@ public class LoginServlet extends HttpServlet {
             HttpSession session = request.getSession();
             session.setAttribute("loginUser", user);
 
-            // 導向首頁（或商品列表）
-            response.sendRedirect("ProductList");
+            // 根據角色導向不同頁面
+            if ("admin".equals(user.getRole())) {
+                // 管理員 → 導向訂單管理
+                response.sendRedirect("admin/orders");
+            } else {
+                // 一般用戶 → 導向商品列表
+                response.sendRedirect("ProductList");
+            }
 
         } else {
             // 登入失敗 → 顯示錯誤訊息並回到登入頁
