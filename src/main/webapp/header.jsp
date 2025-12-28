@@ -1,18 +1,27 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="model.User" %>
-<%@ page import="java.util.Map" %>
-<%@ page import="model.Product" %>
+<%@ page import="java.util.List" %>
+<%@ page import="model.CartItem" %>
+<%@ page import="dao.CartItemDAO" %>
 
 <%
     String ctx = request.getContextPath();
     User loginUser = (User) session.getAttribute("loginUser");
 
-    // 取得購物車數量
-    Map<Integer, Integer> cart = (Map<Integer, Integer>) session.getAttribute("cart");
+    // 取得購物車數量（從資料庫）
     int cartItemCount = 0;
-    if (cart != null && !cart.isEmpty()) {
-        for (Integer quantity : cart.values()) {
-            cartItemCount += quantity;
+    if (loginUser != null && !"admin".equals(loginUser.getRole())) {
+        try {
+            CartItemDAO cartDao = new CartItemDAO();
+            List<CartItem> cartItems = cartDao.getCartItemsByUser(loginUser.getId());
+            if (cartItems != null && !cartItems.isEmpty()) {
+                for (CartItem item : cartItems) {
+                    cartItemCount += item.getQuantity();
+                }
+            }
+        } catch (Exception e) {
+            // 發生錯誤時，角標顯示為 0
+            cartItemCount = 0;
         }
     }
 %>

@@ -31,14 +31,58 @@ body {
 }
 
 /* 頁面標題 */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
 .page-title {
     color: #4A4A4A;
     font-size: 2rem;
     font-weight: 700;
-    margin-bottom: 2rem;
     padding-bottom: 0.75rem;
     border-bottom: 3px solid #D4A574;
-    display: inline-block;
+}
+
+/* 排序選單 */
+.sort-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.sort-label {
+    font-weight: 600;
+    color: #4A4A4A;
+    font-size: 0.95rem;
+}
+
+.sort-select {
+    padding: 0.5rem 1rem;
+    border: 1px solid #E8E3D8;
+    border-radius: 8px;
+    background-color: white;
+    color: #4A4A4A;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-width: 180px;
+}
+
+.sort-select:hover {
+    border-color: #D4A574;
+    box-shadow: 0 2px 4px rgba(212, 165, 116, 0.1);
+}
+
+.sort-select:focus {
+    outline: none;
+    border-color: #D4A574;
+    box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.1);
 }
 
 /* 商品網格布局 */
@@ -228,7 +272,20 @@ body {
 <jsp:include page="/header.jsp" />
 
 <div class="container">
-    <h1 class="page-title">🛍️ 商品列表</h1>
+    <div class="page-header">
+        <h1 class="page-title">🛍️ 商品列表</h1>
+
+        <div class="sort-container">
+            <label class="sort-label">排序：</label>
+            <select class="sort-select" onchange="location.href='ProductList?sort=' + this.value">
+                <option value="default" <%= "default".equals(request.getAttribute("currentSort")) ? "selected" : "" %>>預設排序</option>
+                <option value="price_asc" <%= "price_asc".equals(request.getAttribute("currentSort")) ? "selected" : "" %>>價格：低到高</option>
+                <option value="price_desc" <%= "price_desc".equals(request.getAttribute("currentSort")) ? "selected" : "" %>>價格：高到低</option>
+                <option value="name_asc" <%= "name_asc".equals(request.getAttribute("currentSort")) ? "selected" : "" %>>名稱：A-Z</option>
+                <option value="name_desc" <%= "name_desc".equals(request.getAttribute("currentSort")) ? "selected" : "" %>>名稱：Z-A</option>
+            </select>
+        </div>
+    </div>
 
     <%
         List<Product> list = (List<Product>) request.getAttribute("productList");
