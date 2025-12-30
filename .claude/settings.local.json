@@ -11,7 +11,8 @@
       "Bash(copy /Y d:workAddTestFinalProject_EcommercetargetFinalProject_Ecommerce.war D:tomcat-baseTomcat9webapps)",
       "Bash(copy /Y \"d:\\\\work\\\\AddTest\\\\FinalProject_Ecommerce\\\\target\\\\FinalProject_Ecommerce.war\" \"D:\\\\tomcat-base\\\\Tomcat9\\\\webapps\")",
       "Bash(xargs:*)",
-      "Bash(git -C \"d:\\\\work\\\\AddTest\\\\FinalProject_Ecommerce\" log --all --name-status --oneline)"
+      "Bash(git -C \"d:\\\\work\\\\AddTest\\\\FinalProject_Ecommerce\" log --all --name-status --oneline)",
+      "Bash(dir:*)"
     ]
   }
 }

@@ -115,7 +115,7 @@ body {
 }
 
 .btn-sm {
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 0.75rem !important;
     font-size: 0.875rem;
 }
 
@@ -176,6 +176,7 @@ body {
     box-shadow: 0 2px 8px rgba(212, 165, 116, 0.08);
     border-collapse: collapse;
     border: 1px solid #E8E3D8;
+    table-layout: fixed;
 }
 
 .admin-table th {
@@ -204,6 +205,14 @@ body {
 .table-actions {
     display: flex;
     gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.table-actions .btn {
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.875rem;
+    white-space: nowrap;
 }
 
 .empty-state {
@@ -297,8 +306,8 @@ body {
                 <th>名稱</th>
                 <th style="width: 120px;">價格</th>
                 <th style="width: 100px;">庫存</th>
-                <th style="width: 120px;">分類</th>
-                <th style="width: 200px;">操作</th>
+                <th style="width: 100px;">分類</th>
+                <th style="width: 180px;">操作</th>
             </tr>
         </thead>
         <tbody>
@@ -316,14 +325,8 @@ body {
                 <td><%= p.getCategory() %></td>
                 <td>
                     <div class="table-actions">
-                        <a href="<%= ctx %>/admin/products/edit?id=<%= p.getId() %>" class="btn btn-primary btn-sm">
-                            ✏️ 編輯
-                        </a>
-                        <a href="<%= ctx %>/admin/products/delete?id=<%= p.getId() %>"
-                           class="btn btn-danger btn-sm"
-                           onclick="return confirm('確定要刪除「<%= p.getName() %>」嗎？');">
-                            🗑️ 刪除
-                        </a>
+                        <a href="<%= ctx %>/admin/products/edit?id=<%= p.getId() %>" class="btn btn-primary btn-sm">✏️ 編輯</a>
+                        <a href="<%= ctx %>/admin/products/delete?id=<%= p.getId() %>" class="btn btn-danger btn-sm" onclick="return confirm('確定要刪除「<%= p.getName() %>」嗎？');">🗑️ 刪除</a>
                     </div>
                 </td>
             </tr>
